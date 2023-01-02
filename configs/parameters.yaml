@@ -1,0 +1,11 @@
+# PATHS
+wav_path: '../data/wavs/'
+embedding_path: '../data/embeddings/'
+
+# PARAMETERS
+sampling_rate: 16000
+batch_size: 16
+learning_rate: 0.001
+
+# Types of embeddings supported: 'ecapa_tdnn' or 'x-vector'
+embedding_type: ecapa_tdnn
