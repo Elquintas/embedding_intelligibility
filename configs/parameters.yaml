@@ -8,4 +8,6 @@ batch_size: 16
 learning_rate: 0.001
 
 # Types of embeddings supported: 'ecapa_tdnn' or 'x-vector'
-embedding_type: ecapa_tdnn
+# ecapa_tdnn: dim = 192
+# x-vector: dim = 512
+embedding_type: x-vector

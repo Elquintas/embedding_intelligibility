@@ -61,12 +61,15 @@ if __name__=="__main__":
     if not os.path.exists(saving_path):
         os.makedirs(saving_path)
 
-
+    # GENERATES TWO EMBEDDINGS [2,1,DIM] IF FILE IS IN STEREO
+    # GENERATES ONE EMBEDDING [1,1,DIM] IF FILE IS IN MONO
     print("\nExtracting speaker embeddings...")
     with tqdm(total=len(extraction_files)) as pbar:
         for files in os.listdir(config['wav_path']):
             if files.endswith('.wav'):
-                embedding = extractor(config['wav_path'] + files, classifier)
+                embedding = extractor((config['wav_path'] + \
+                        files), classifier)
+                
                 buf = os.path.splitext(files)
                 new_f = buf[0]+'_'+ext+'_emb.pickle'
             
