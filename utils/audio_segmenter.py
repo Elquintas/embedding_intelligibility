@@ -5,7 +5,6 @@ import wave
 import contextlib
 from tqdm import tqdm
 
-fname = AudioSegment.from_wav("./file1.wav")
 
 
 # RETURNS THE DURATION OF AN AUDIOFILE IN MILISECS
@@ -14,6 +13,7 @@ def get_file_duration(wavfile):
         frames = f.getnframes()
         rate = f.getframerate()
         duration = frames / float(rate)
+        
     return duration*1000    # DURATION IN MILISECS FOR AUDIOSEGMENT
 
 # SEGMENTS THE AUDIO FILE IN EQUAL LENGTH SEGMENTS
@@ -24,10 +24,10 @@ def segmenter(wavpath, wavfile, segs, savepath):
     i = 1
     j = 0
     tblock = duration/segs
-
+    
     while (j+tblock) <= duration:
         newAudio = AudioSegment.from_wav(wavpath+wavfile)
-        newAudio = fname[j:j+tblock]
+        newAudio = newAudio[j:j+tblock]
         newAudio.export(savepath+buf[0]+'_seg'+\
                 str(i)+'.wav', format='wav')
         j += tblock
@@ -37,7 +37,6 @@ def segmenter(wavpath, wavfile, segs, savepath):
 if __name__=="__main__":
 
     segments = 3
-    wavfile = './file1.wav'
     
     wav_path = '../data/wavs/'
     saving_path = '../data/wavs/segmented/'
