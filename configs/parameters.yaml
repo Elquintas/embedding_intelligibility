@@ -1,13 +1,31 @@
 # PATHS
 wav_path: '../data/wavs/'
+data_path: './data/'
 embedding_path: '../data/embeddings/'
+model_path: '../models/model'
 
-# PARAMETERS
+
+# TRAINING PARAMETERS
 sampling_rate: 16000
 batch_size: 16
 learning_rate: 0.001
+epochs: 50
+dropout: 0.2
+
+training_set_file: 'TRAINING.txt'
+test_set_file: 'TEST.txt'
+
+
+
+# MODEL PARAMETERS
+
+first_layer: 512
+second_layer: 128
+third_layer: 62
+
+
 
 # Types of embeddings supported: 'ecapa_tdnn' or 'x-vector'
-# ecapa_tdnn: dim = 192
-# x-vector: dim = 512
+# ecapa_tdnn: dim = 192 (change first_layer dim)
+# x-vector: dim = 512   (change first_layer dim)
 embedding_type: x-vector
