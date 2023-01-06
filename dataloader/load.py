@@ -1,15 +1,19 @@
 import pandas as pd
 import torch
+import pickle
 from torch.utils.data import Dataset,DataLoader
 
+embedding_path = './data/embeddings/ecapa/'
+
 class load_data(Dataset):
-    def __init__(self, filename, datadir):
+    def __init__(self, filename):
 
         self.filename = filename
-        self.datadir = datadir
+        #self.datadir = datadir
         xy = pd.read_csv(filename,header=None)
+        
+        self.emb_file = xy.values[:,0]
 
-        self.file = xy.values[:,0]
         self.INT = xy.values[:,1]
         self.SEV = xy.values[:,2]
         self.V  =  xy.values[:,3]
@@ -17,9 +21,15 @@ class load_data(Dataset):
         self.P  =  xy.values[:,5]
         self.PD =  xy.values[:,6]
 
+        self.n_samples = xy.shape[0]
+
+
     def __len__(self):
         return self.n_samples
 
     def __getitem__(self, idx):
 
-        return (self.file[idx], )
+        emb = torch.load(embedding_path + self.emb_file[idx])
+
+        return emb,self.emb_file[idx],self.INT[idx],self.SEV[idx],\
+                self.V[idx],self.R[idx],self.P[idx],self.PD[idx]

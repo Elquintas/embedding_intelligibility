@@ -27,7 +27,7 @@ class model_embedding_snn(nn.Module):
         self.fc_pd = nn.Linear(cfg['third_layer'],1)
 
         self.fc_int = nn.Linear(cfg['third_layer'],1)
-
+        
 
     def forward(self, input_embs):
 

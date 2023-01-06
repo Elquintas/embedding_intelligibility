@@ -1,8 +1,8 @@
-ANC150_LEC_seg_1_ecapa_emb.pickle,7.0,2.3,1.2,4.5,2.0,2.1
-ANC150_LEC_seg_2_ecapa_emb.pickle,5.0,3.3,2.2,4.1,1.2,8.3
-ANC150_LEC_seg_3_ecapa_emb.pickle,4.0,2.5,4.2,3.5,3.0,8.3
-ANC150_LEC_seg_4_ecapa_emb.pickle,3.0,2.3,1.2,4.1,3.4,5.4
-ANC150_LEC_seg_5_ecapa_emb.pickle,1.2,2.5,6.2,4.1,1.0,2.1
-ANC150_LEC_seg_6_ecapa_emb.pickle,7.3,2.4,1.2,3.5,2.5,2.4
-ANC150_LEC_seg_7_ecapa_emb.pickle,4.0,2.3,3.2,4.3,1.0,3.6
-ANC150_LEC_seg_8_ecapa_emb.pickle,2.0,2.3,2.2,4.2,1.6,2.4
+GAV008_LEC_seg1_ecapa_emb.pickle,7.0,2.3,1.2,4.5,2.0,2.1
+GAV008_LEC_seg2_ecapa_emb.pickle,5.0,3.3,2.2,4.1,1.2,8.3
+GAV008_LEC_seg3_ecapa_emb.pickle,4.0,2.5,4.2,3.5,3.0,8.3
+SER007_LEC_seg1_ecapa_emb.pickle,3.0,2.3,1.2,4.1,3.4,5.4
+SER007_LEC_seg2_ecapa_emb.pickle,1.2,2.5,6.2,4.1,1.0,2.1
+SER007_LEC_seg3_ecapa_emb.pickle,7.3,2.4,1.2,3.5,2.5,2.4
+TTT083_LEC_seg1_ecapa_emb.pickle,4.0,2.3,3.2,4.3,1.0,3.6
+TTT083_LEC_seg2_ecapa_emb.pickle,2.0,2.3,2.2,4.2,1.6,2.4

@@ -7,19 +7,19 @@ model_path: '../models/model'
 
 # TRAINING PARAMETERS
 sampling_rate: 16000
-batch_size: 16
+batch_size: 8
 learning_rate: 0.001
-epochs: 50
+epochs: 5
 dropout: 0.2
 
-training_set_file: 'TRAINING.txt'
-test_set_file: 'TEST.txt'
+train_set_file: './data/TRAINING.txt'
+test_set_file: './data/TEST.txt'
 
 
 
 # MODEL PARAMETERS
 
-first_layer: 512
+first_layer: 192
 second_layer: 128
 third_layer: 62
 
@@ -28,4 +28,4 @@ third_layer: 62
 # Types of embeddings supported: 'ecapa_tdnn' or 'x-vector'
 # ecapa_tdnn: dim = 192 (change first_layer dim)
 # x-vector: dim = 512   (change first_layer dim)
-embedding_type: x-vector
+embedding_type: ecapa_tdnn
