@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F 
 
 with open("./configs/parameters.yaml", "r") as ymlfile:
-    cfg = yaml.load(ymlfile)
+    cfg = yaml.safe_load(ymlfile)
 
 
 class model_embedding_snn(nn.Module):
@@ -12,7 +12,8 @@ class model_embedding_snn(nn.Module):
         super(model_embedding_snn,self).__init__()
 
         self.relu = nn.ReLU()
-        self.dropout = nn.Dropout2d(cfg['dropout'])
+        #self.dropout = nn.Dropout2d(cfg['dropout'])
+        self.dropout = nn.Dropout(cfg['dropout'])
 
         self.batch_norm1 = nn.BatchNorm1d(cfg['first_layer'])
         self.batch_norm2 = nn.BatchNorm1d(cfg['second_layer'])
@@ -26,8 +27,8 @@ class model_embedding_snn(nn.Module):
         self.fc_pros = nn.Linear(cfg['third_layer'],1)
         self.fc_pd = nn.Linear(cfg['third_layer'],1)
 
-        self.fc_int = nn.Linear(cfg['third_layer'],1)
-        
+        self.fc_sev = nn.Linear(cfg['third_layer'],1)
+        self.fc_int = nn.Linear(cfg['third_layer'],1)        
 
     def forward(self, input_embs):
 
@@ -53,4 +54,7 @@ class model_embedding_snn(nn.Module):
         INT = self.fc_int(x)
         INT = self.relu(INT)
 
-        return INT, v, r, p, pd
+        SEV = self.fc_sev(x)
+        SEV = self.relu(SEV)
+
+        return SEV, INT, v, r, p, pd

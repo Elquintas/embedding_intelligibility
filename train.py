@@ -3,9 +3,12 @@ import torch
 import torch.nn as nn
 import yaml
 import models.model
+import utils.plotter as plotter
 import dataloader.load
+import numpy as np
 
 from torch.utils.data import DataLoader
+from scipy import stats
 
 torch.manual_seed(42)
 torch.cuda.manual_seed(42)
@@ -37,9 +40,13 @@ if __name__ == "__main__":
     trainloader = DataLoader(dataset=train_set, batch_size=cfg['batch_size'],\
             shuffle=True,drop_last=True)
 
-    testloader = DataLoader(dataset=test_set, batch_size=1)
+    testloader = DataLoader(dataset=test_set, batch_size=27)
 
     for ep in range(cfg['epochs']):
+        
+        TRAIN_LOSS = []
+        TEST_LOSS = []
+
         print('EPOCH: {0}/{1}'.format(ep+1,cfg['epochs']))
         
         model_snn.train()
@@ -48,13 +55,45 @@ if __name__ == "__main__":
             
             optimizer.zero_grad()
             
-            at,bt,ct,dt,et = model_snn(b[0].squeeze().cuda())
+            #[b0] --> filename
+            #[b1] --> severity
+            #[b2] --> intelligibility
+            #[b3] --> voix
+            #[b4] --> resonance
+            #[b5] --> phonemic distortions
+
+            sev_,int_,v_,r_,p_,pd_ = model_snn(b[0].squeeze().cuda())
             
-            loss = criterion(at.double(),b[2].unsqueeze(1).cuda())
-            
+            loss = criterion(int_.double(),b[2].unsqueeze(1).cuda())
+            TRAIN_LOSS.append(loss.cpu().detach().numpy())
+
             loss.backward()
             optimizer.step()
 
-            print(loss)
+            #print(loss)
 
+        model_snn.eval()
+        for at, bt in enumerate(testloader):
+            optimizer.zero_grad()
             
+            sev_test,int_test,v_test,r_test,p_test,pd_test = model_snn(\
+                    bt[0].squeeze().cuda())
+
+            loss_test = criterion(int_test.double(),bt[2].unsqueeze(1).cuda())
+            TEST_LOSS.append(loss_test.cpu().detach().numpy())
+      
+            if ep+1 == cfg['epochs']:
+                predicted = int_test.squeeze().tolist()
+                reference = bt[2].tolist()
+                print(predicted,reference)
+        
+
+        print('Train Loss: {} ----- Test Loss: {}'.format(np.mean(TRAIN_LOSS),\
+                np.mean(TEST_LOSS)))
+        
+    correlation = stats.spearmanr(predicted,reference)[0]
+    print("Correlation (Spearman's): {}".format(correlation))
+    plotter.plot_graph(predicted,reference,correlation,1)
+
+
+
