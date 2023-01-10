@@ -1,9 +1,16 @@
 import pandas as pd
 import torch
 import pickle
+import yaml
 from torch.utils.data import Dataset,DataLoader
 
-embedding_path = './data/embeddings/ecapa/'
+#embedding_path = './data/embeddings/xvec/'
+
+with open("./configs/parameters.yaml", "r") as ymlfile:
+    cfg = yaml.safe_load(ymlfile)
+
+#embedding_path = cfg['embedding_path'] 
+
 
 class load_data(Dataset):
     def __init__(self, filename):
@@ -29,7 +36,7 @@ class load_data(Dataset):
 
     def __getitem__(self, idx):
 
-        emb = torch.load(embedding_path + self.emb_file[idx])
+        emb = torch.load(cfg['embedding_path'] + self.emb_file[idx])
 
         return emb,self.emb_file[idx],self.INT[idx],self.SEV[idx],\
                 self.V[idx],self.R[idx],self.P[idx],self.PD[idx]

@@ -1,0 +1,33 @@
+Automatic Prediction of speech intelligibility using speaker embeddings
+
+Two types of embeddings may be used in the following system:
+	X-Vectors   (via Hugging Face) dim:512
+	ECAPA_TDNN  (via Hugging Face) dim:192
+
+The system designed makes use of a Shallow Neural Network whose first 
+dimension is conditioned on the size of the embedding used.
+
+The model architecture can be found on ./models/model.py
+
+The full list of parameters and path to files used can be found on the
+config file (see ./configs/parameters.yaml)
+
+the script ./dataloader/embedding_extract.py provides a function to extract
+the speaker embeddings. See config file for PATH setup for .wav and .pickle
+files.
+
+Input TRAIN, TEST and VALIDATION .csv files should be in the following form:
+
+	embedding_file.pickle,SEV,INT,V,R,PD
+
+	SEV - Speech Disorder Severity
+	INT - Speech Intelligibility
+	V - Voice Quality Analysis
+	R - Resonance
+	P - Prosody
+	PD - Phonemic Distortions
+
+train.py script trains and validates the system (see train and validation file
+path in the configs file)
+
+test.py script tests the system (see test file in the configs file)

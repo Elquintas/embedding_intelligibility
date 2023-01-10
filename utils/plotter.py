@@ -26,8 +26,8 @@ def plot_graph(a, b, corr_measure,rmse):
     mm, bb = np.polyfit(a,b,1)
     plt.plot(vec, mm*vec + bb, linestyle='dashdot', color='blue', \
             label='regression line',linewidth=1.5)
-    plt.xlabel('Severity - Reference',fontsize=36)
-    plt.ylabel('Severity - Predicted', fontsize=36)
+    plt.xlabel('Severity - Prediction',fontsize=36)
+    plt.ylabel('Severity - Reference', fontsize=36)
 
     props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
 

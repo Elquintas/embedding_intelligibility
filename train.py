@@ -21,6 +21,24 @@ def load_config(config_path):
     except Exception as e:
         print('Error reading the config file')
 
+def rmse(a,b):
+    return np.sqrt(((a-b)**2).mean())
+
+def multi_task_loss(s,i,v,r,p,pd,b):
+
+    l_s = criterion(s.double(),b[2].unsqueeze(1).cuda())
+    l_i = criterion(i.double(),b[3].unsqueeze(1).cuda())
+
+    return (0.5*l_s+0.5*l_i)
+
+def return_metrics(a,b):
+     
+    corr = stats.spearmanr(a,b)[0]
+    error = rmse(a,b)
+    return corr,error
+
+
+
 
 if __name__ == "__main__":
 
@@ -35,17 +53,17 @@ if __name__ == "__main__":
 
     sequential = dataloader.load.load_data
     train_set = sequential(cfg['train_set_file'])
-    test_set = sequential(cfg['test_set_file'])
+    validation_set = sequential(cfg['validation_set_file'])
 
     trainloader = DataLoader(dataset=train_set, batch_size=cfg['batch_size'],\
             shuffle=True,drop_last=True)
 
-    testloader = DataLoader(dataset=test_set, batch_size=27)
+    val_loader = DataLoader(dataset=validation_set, batch_size=27)
 
     for ep in range(cfg['epochs']):
         
         TRAIN_LOSS = []
-        TEST_LOSS = []
+        VAL_LOSS = []
 
         print('EPOCH: {0}/{1}'.format(ep+1,cfg['epochs']))
         
@@ -55,16 +73,21 @@ if __name__ == "__main__":
             
             optimizer.zero_grad()
             
-            #[b0] --> filename
-            #[b1] --> severity
-            #[b2] --> intelligibility
-            #[b3] --> voix
-            #[b4] --> resonance
-            #[b5] --> phonemic distortions
+            #b[0] --> embedding
+            #b[1] --> filename
+            #b[2] --> severity
+            #b[3] --> intelligibility
+            #b[4] --> voix
+            #b[5] --> resonance
+            #b[6] --> prosody
+            #b[7] --> phonemic distortions
 
             sev_,int_,v_,r_,p_,pd_ = model_snn(b[0].squeeze().cuda())
-            
-            loss = criterion(int_.double(),b[2].unsqueeze(1).cuda())
+
+            #loss = criterion(int_.double(),b[3].unsqueeze(1).cuda())
+
+            loss = multi_task_loss(sev_,int_,v_,r_,p_,pd_,b)
+
             TRAIN_LOSS.append(loss.cpu().detach().numpy())
 
             loss.backward()
@@ -73,27 +96,40 @@ if __name__ == "__main__":
             #print(loss)
 
         model_snn.eval()
-        for at, bt in enumerate(testloader):
+        for at, bt in enumerate(val_loader):
             optimizer.zero_grad()
             
-            sev_test,int_test,v_test,r_test,p_test,pd_test = model_snn(\
+            sev_val,int_val,v_val,r_val,p_val,pd_val = model_snn(\
                     bt[0].squeeze().cuda())
 
-            loss_test = criterion(int_test.double(),bt[2].unsqueeze(1).cuda())
-            TEST_LOSS.append(loss_test.cpu().detach().numpy())
+            #loss_test = criterion(int_test.double(),bt[3].unsqueeze(1).cuda())
+            
+            loss_val = multi_task_loss(sev_val,int_val,v_val,r_val,p_val,\
+                    pd_val,bt)
+
+            VAL_LOSS.append(loss_val.cpu().detach().numpy())
       
             if ep+1 == cfg['epochs']:
-                predicted = int_test.squeeze().tolist()
-                reference = bt[2].tolist()
-                print(predicted,reference)
+                pred_sev = np.array(sev_val.squeeze().tolist())
+                ref_sev = np.array(bt[2].tolist())
+                pred_int = np.array(int_val.squeeze().tolist())
+                ref_int = np.array(bt[3].tolist())
+                
+                torch.save(model_snn.state_dict(), cfg['model_path']+'model_snn_'+\
+                        cfg['embedding_type'])                
         
 
-        print('Train Loss: {} ----- Test Loss: {}'.format(np.mean(TRAIN_LOSS),\
-                np.mean(TEST_LOSS)))
-        
-    correlation = stats.spearmanr(predicted,reference)[0]
-    print("Correlation (Spearman's): {}".format(correlation))
-    plotter.plot_graph(predicted,reference,correlation,1)
+        print('Train Loss: {} ----- Validation Loss: {}'.format(np.mean(TRAIN_LOSS),\
+                np.mean(VAL_LOSS)))
+    
+
+    corr_sev,rmse_sev = return_metrics(pred_sev,ref_sev)
+    corr_int,rmse_int = return_metrics(pred_int,ref_int)
+
+    print("Correlation SEV(Spearman's): {} ----- RMSE: {}".format(corr_sev,rmse_sev))
+    print("Correlation INT(Spearman's): {} ----- RMSE: {}".format(corr_int,rmse_int))
+    
+    #plotter.plot_graph(predicted,reference,correlation,rmse)
 
 
 
