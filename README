@@ -31,3 +31,13 @@ train.py script trains and validates the system (see train and validation file
 path in the configs file)
 
 test.py script tests the system (see test file in the configs file)
+
+To directly predict speech intelligibility using a pretrained model go to ./predictor
+and use the method "predict" of the class PythonPredictor (in file predictor.py)
+
+Example:
+	$python3
+	>> import predictor
+	>> pred = predictor.PythonPredictor()
+	>> pred.predict('PATH_TO_WAV_FILE')
+
